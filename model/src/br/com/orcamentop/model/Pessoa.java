@@ -1,14 +1,10 @@
 package br.com.orcamentop.model;
 
-import br.com.orcamentop.interfaces.XMLParser;
-import com.thoughtworks.xstream.XStream;
-
 /**
  * 
  * @author Leandro Ramos (leandroramosmarcelino@hotmail.com)
  */
-public class Pessoa 
-        implements XMLParser {
+public class Pessoa {
     private final int codigo;
     private String nome;
     private String telefone;
@@ -18,30 +14,6 @@ public class Pessoa
         this.codigo = codigo;
     }
     
-    @Override
-    public String parseToXML() {
-        XStream parser = getParser();
-        return parser.toXML(this);
-    }
-
-    @Override
-    public XStream getParser() {
-        XStream parser = new XStream();
-        parser.alias("pessoa", Pessoa.class);
-        
-        return parser;
-    }
-
-    @Override
-    public String getDir() {
-        return "Pessoa.xml";
-    }
-    
-    @Override
-    public String getFileName() {
-        return Integer.toString(getCodigo()) + ".xml";
-    }
-
     public int getCodigo() {
         return codigo;
     }
@@ -68,5 +40,16 @@ public class Pessoa
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Pessoa(").append(codigo).append(") -> ");
+        sb.append(nome).append(" - ");
+        sb.append(email).append(" - ");
+        sb.append(telefone);
+
+        return sb.toString();
     }
 }

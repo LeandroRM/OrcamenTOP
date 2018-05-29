@@ -1,10 +1,11 @@
 package br.com.orcamentop.controller;
 
 import br.com.orcamentop.interfaces.XMLParser;
+import br.com.orcamentop.model.ListaPessoa;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.List;
 
 /**
  *
@@ -24,12 +25,8 @@ public class PersistenciaXML {
         return instance;
     }
     
-    public void save(List<XMLParser> xmlList) {
-        
-    }
-    
     public void save(XMLParser xmlObject) {
-        File file = makeFile(xmlObject.getDir());
+        File file = makeFile(xmlObject.getFileName());
         
         saveFile(file, xmlObject.parseToXML());
     }
@@ -37,8 +34,7 @@ public class PersistenciaXML {
     private File makeFile(String name) {
         File file = new File(FILES_DIR + name);
         file.mkdir();
-//        dir += xmlObject.getFileName();
-//        file = new File(dir);
+
         if (file.exists()) {
             file.delete();
         }
@@ -51,6 +47,20 @@ public class PersistenciaXML {
             writer.write(content);
         } catch (Exception e) {
             System.out.println("Falha ao gravar arquivo " + file.getAbsolutePath());
+        }
+    }
+    
+    public ListaPessoa loadPessoas() {
+        ListaPessoa helper = new ListaPessoa();
+        File file = new File(FILES_DIR + helper.getFileName());
+
+        try (FileReader fileReader = new FileReader(file)) {
+            ListaPessoa retornar = (ListaPessoa) helper.getParser().fromXML(fileReader);
+            fileReader.close();
+            
+            return retornar;
+        } catch (Exception e) {
+            return helper;
         }
     }
 }
