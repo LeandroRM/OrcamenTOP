@@ -1,4 +1,4 @@
-package br.com.orcamentop.model;
+package br.com.orcamentop.dto;
 
 
 /**
@@ -6,10 +6,14 @@ package br.com.orcamentop.model;
  * @author Leandro Ramos (leandroramosmarcelino@hotmail.com)
  */
 public class Produto {
-    private int codigo;
+    private final int codigo;
     private String descricao;
     private double valor;
 
+    public Produto(int codigo) {
+        this.codigo = codigo;
+    }
+    
     public int getCodigo() {
         return codigo;
     }

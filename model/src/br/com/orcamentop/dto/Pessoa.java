@@ -1,4 +1,4 @@
-package br.com.orcamentop.model;
+package br.com.orcamentop.dto;
 
 /**
  * 

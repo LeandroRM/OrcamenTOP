@@ -1,4 +1,4 @@
-package br.com.orcamentop.model;
+package br.com.orcamentop.dto;
 
 import br.com.orcamentop.interfaces.XMLParser;
 import com.thoughtworks.xstream.XStream;
@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @author Leandro Ramos (leandroramosmarcelino@hotmail.com)
  */
-public class ListaProduto implements XMLParser{
+public class ListaProduto implements XMLParser {
     private final List<Produto> lista;
 
     public ListaProduto() {

@@ -1,7 +1,9 @@
 package br.com.orcamentop.controller;
 
 import br.com.orcamentop.interfaces.XMLParser;
-import br.com.orcamentop.model.ListaPessoa;
+import br.com.orcamentop.dto.ListaPessoa;
+import br.com.orcamentop.dto.ListaProduto;
+import br.com.orcamentop.dto.ListaOrcamento;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
@@ -56,6 +58,34 @@ public class PersistenciaXML {
 
         try (FileReader fileReader = new FileReader(file)) {
             ListaPessoa retornar = (ListaPessoa) helper.getParser().fromXML(fileReader);
+            fileReader.close();
+            
+            return retornar;
+        } catch (Exception e) {
+            return helper;
+        }
+    }
+    
+    public ListaProduto loadProdutos() {
+        ListaProduto helper = new ListaProduto();
+        File file = new File(FILES_DIR + helper.getFileName());
+
+        try (FileReader fileReader = new FileReader(file)) {
+            ListaProduto retornar = (ListaProduto) helper.getParser().fromXML(fileReader);
+            fileReader.close();
+            
+            return retornar;
+        } catch (Exception e) {
+            return helper;
+        }
+    }
+    
+    public ListaOrcamento loadOrcamentos() {
+        ListaOrcamento helper = new ListaOrcamento();
+        File file = new File(FILES_DIR + helper.getFileName());
+
+        try (FileReader fileReader = new FileReader(file)) {
+            ListaOrcamento retornar = (ListaOrcamento) helper.getParser().fromXML(fileReader);
             fileReader.close();
             
             return retornar;

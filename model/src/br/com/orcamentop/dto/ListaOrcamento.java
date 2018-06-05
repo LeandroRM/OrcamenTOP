@@ -1,4 +1,4 @@
-package br.com.orcamentop.model;
+package br.com.orcamentop.dto;
 
 import br.com.orcamentop.interfaces.XMLParser;
 import com.thoughtworks.xstream.XStream;
