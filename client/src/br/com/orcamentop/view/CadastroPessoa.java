@@ -1,7 +1,7 @@
 package br.com.orcamentop.view;
 
 import br.com.orcamentop.dto.Pessoa;
-import br.com.orcamentop.interfaces.ControllerPessoa;
+import br.com.orcamentop.negocio.ControllerPessoa;
 import javax.swing.JOptionPane;
 
 /**
@@ -134,7 +134,8 @@ public class CadastroPessoa extends javax.swing.JFrame {
             telefone = "";
         }
         
-        Pessoa pessoa = new Pessoa(controllerPessoa.gerarNovoCodigo());
+        Pessoa pessoa = new Pessoa();
+        pessoa.setCodigo(0);
         pessoa.setNome(nome);
         pessoa.setTelefone(telefone);
         pessoa.setEmail(email);

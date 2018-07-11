@@ -1,7 +1,7 @@
 package br.com.orcamentop.view;
 
 import br.com.orcamentop.dto.Produto;
-import br.com.orcamentop.interfaces.ControllerProduto;
+import br.com.orcamentop.negocio.ControllerProduto;
 import javax.swing.JOptionPane;
 
 /**
@@ -28,8 +28,8 @@ public class CadastroProduto extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         txtDescricao = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        txtValor = new javax.swing.JFormattedTextField();
         jButton1 = new javax.swing.JButton();
+        txtValor = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cadastro de Produto");
@@ -40,8 +40,6 @@ public class CadastroProduto extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         jLabel2.setText("Valor:");
 
-        txtValor.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
-
         jButton1.setText("Gravar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -49,23 +47,25 @@ public class CadastroProduto extends javax.swing.JFrame {
             }
         });
 
+        txtValor.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtValor)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 293, Short.MAX_VALUE)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(txtDescricao, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                    .addComponent(txtDescricao)
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addComponent(jLabel2))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(txtValor, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -114,7 +114,8 @@ public class CadastroProduto extends javax.swing.JFrame {
             valor = Double.parseDouble(sValor.replace(".", "").replace(",", "."));
         }
         
-        Produto produto = new Produto(controllerProduto.gerarNovoCodigo());
+        Produto produto = new Produto();
+        produto.setCodigo(0);
         produto.setDescricao(desc);
         produto.setValor(valor);
 
