@@ -5,6 +5,7 @@ import br.com.orcamentop.dto.ListaProduto;
 import br.com.orcamentop.dto.Produto;
 import br.com.orcamentop.persistencia.PersistenciaProduto;
 import br.com.orcamentop.persistencia.PersistenciaProdutoHelper;
+import java.util.List;
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.NamingContextExt;
 import org.omg.CosNaming.NamingContextExtHelper;
@@ -34,9 +35,38 @@ public class ControllerProdutoImpl extends ControllerProdutoPOA {
             return false;
         }
         
-        lista.getLista().add(produto);
+        List<Produto> listaProduto = lista.getLista();
+        if (produto.getCodigo() == 0) { //Adiciona
+            adicionar(listaProduto, produto);
+        } else { //Altera
+            if (!alterar(listaProduto, produto)) {
+                return false;
+            }
+        }
+
         persistencia.salvar(lista);
         return true;
+    }
+    
+    private void adicionar(final List<Produto> listaProdutos, Produto produto) {
+        int novoCodigo = 1;
+        if (!listaProdutos.isEmpty()) {
+            novoCodigo = listaProdutos.get(listaProdutos.size() - 1).getCodigo() + 1;
+        } 
+
+        produto.setCodigo(novoCodigo);
+        listaProdutos.add(produto);
+    }
+    
+    private boolean alterar(final List<Produto> listaProdutos, Produto produto) {
+        for (Produto p : listaProdutos) {
+            if (p.getCodigo() == produto.getCodigo()) {
+                p.setDescricao(produto.getDescricao());
+                p.setValor(produto.getValor());
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

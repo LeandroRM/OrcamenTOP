@@ -5,6 +5,7 @@ import br.com.orcamentop.dto.ListaOrcamento;
 import br.com.orcamentop.dto.Orcamento;
 import br.com.orcamentop.persistencia.PersistenciaOrcamento;
 import br.com.orcamentop.persistencia.PersistenciaOrcamentoHelper;
+import java.util.List;
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.NamingContextExt;
 import org.omg.CosNaming.NamingContextExtHelper;
@@ -33,10 +34,42 @@ public class ControllerOrcamentoImpl extends ControllerOrcamentoPOA {
         if (orcamento == null) {
             return false;
         }
-        
-        lista.getLista().add(orcamento);
+        List<Orcamento> listaOrcamentos = lista.getLista();
+        if (orcamento.getCodigo() == 0) { //Adiciona
+            adicionar(listaOrcamentos, orcamento);
+        } else { //Altera
+            if (!alterar(listaOrcamentos, orcamento)) {
+                return false;
+            }
+        }
         persistencia.salvar(lista);
         return true;
+    }
+    
+    private void adicionar(final List<Orcamento> listaOrcamentos, Orcamento orcamento) {
+        int novoCodigo = 1;
+        if (!listaOrcamentos.isEmpty()) {
+            novoCodigo = listaOrcamentos.get(listaOrcamentos.size() - 1).getCodigo() + 1;
+        } 
+
+        orcamento.setCodigo(novoCodigo);
+        listaOrcamentos.add(orcamento);
+    }
+    
+    private boolean alterar(final List<Orcamento> listaOrcamentos, Orcamento orcamento) {
+        for (Orcamento p : listaOrcamentos) {
+            if (p.getCodigo() == orcamento.getCodigo()) {
+                p.setDataCompra(orcamento.getDataCompra());
+                p.setDataCriado(orcamento.getDataCriado());
+                p.setDescricao(orcamento.getDescricao());
+                p.setListaPessoa(orcamento.getListaPessoa());
+                p.setListaProduto(orcamento.getListaProduto());
+                p.setLocalCompra(orcamento.getLocalCompra());
+                p.setObservacao(orcamento.getObservacao());
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

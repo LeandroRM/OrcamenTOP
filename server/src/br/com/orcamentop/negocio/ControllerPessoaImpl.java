@@ -5,6 +5,7 @@ import br.com.orcamentop.dto.ListaPessoa;
 import br.com.orcamentop.dto.Pessoa;
 import br.com.orcamentop.persistencia.PersistenciaPessoa;
 import br.com.orcamentop.persistencia.PersistenciaPessoaHelper;
+import java.util.List;
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.NamingContextExt;
 import org.omg.CosNaming.NamingContextExtHelper;
@@ -34,9 +35,39 @@ public class ControllerPessoaImpl extends ControllerPessoaPOA {
             return false;
         }
         
-        lista.getLista().add(pessoa);
+        List<Pessoa> listaPessoas = lista.getLista();
+        if (pessoa.getCodigo() == 0) { //Adiciona
+            adicionar(listaPessoas, pessoa);
+        } else { //Altera
+            if (!alterar(listaPessoas, pessoa)) {
+                return false;
+            }
+        }
+        
         persistencia.salvar(lista);
         return true;
+    }
+    
+    private void adicionar(final List<Pessoa> listaPessoas, Pessoa pessoa) {
+        int novoCodigo = 1;
+        if (!listaPessoas.isEmpty()) {
+            novoCodigo = listaPessoas.get(listaPessoas.size() - 1).getCodigo() + 1;
+        } 
+
+        pessoa.setCodigo(novoCodigo);
+        listaPessoas.add(pessoa);
+    }
+    
+    private boolean alterar(final List<Pessoa> listaPessoas, Pessoa pessoa) {
+        for (Pessoa p : listaPessoas) {
+            if (p.getCodigo() == pessoa.getCodigo()) {
+                p.setNome(pessoa.getNome());
+                p.setTelefone(pessoa.getTelefone());
+                p.setEmail(pessoa.getEmail());
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

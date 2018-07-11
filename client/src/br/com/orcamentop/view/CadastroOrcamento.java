@@ -1,13 +1,21 @@
 package br.com.orcamentop.view;
 
+import br.com.orcamentop.dto.ListaPessoa;
+import br.com.orcamentop.dto.ListaProduto;
 import br.com.orcamentop.dto.Orcamento;
+import br.com.orcamentop.dto.Pessoa;
+import br.com.orcamentop.dto.Produto;
 import br.com.orcamentop.listmodel.PessoaListModel;
 import br.com.orcamentop.listmodel.ProdutoListModel;
 import br.com.orcamentop.negocio.ControllerOrcamento;
 import br.com.orcamentop.negocio.ControllerPessoa;
 import br.com.orcamentop.negocio.ControllerProduto;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
 
 /**
  *
@@ -47,8 +55,6 @@ public class CadastroOrcamento extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         listProduto = new javax.swing.JList<>();
-        jLabel1 = new javax.swing.JLabel();
-        txtValorExtra = new javax.swing.JFormattedTextField();
         jLabel2 = new javax.swing.JLabel();
         txtValorFinal = new javax.swing.JFormattedTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -68,11 +74,6 @@ public class CadastroOrcamento extends javax.swing.JFrame {
         jLabel4.setText("Produto:");
 
         jScrollPane2.setViewportView(listProduto);
-
-        jLabel1.setText("Valor extra:");
-
-        txtValorExtra.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
-        txtValorExtra.setText("0");
 
         jLabel2.setText("Valor total:");
 
@@ -98,8 +99,6 @@ public class CadastroOrcamento extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 385, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1)
-                            .addComponent(txtValorExtra, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2)
                             .addComponent(txtValorFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5)
@@ -115,20 +114,16 @@ public class CadastroOrcamento extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtValorExtra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtValorFinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -138,6 +133,13 @@ public class CadastroOrcamento extends javax.swing.JFrame {
         ProdutoListModel produtoListModel = new ProdutoListModel(controllerProduto.carregar());
         listProduto.setModel(produtoListModel);
         listProduto.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        listProduto.addListSelectionListener((ListSelectionEvent e) -> {
+            double valorTotal = 0.0;
+            for (int index : listProduto.getSelectedIndices()) {
+                valorTotal += produtoListModel.getProdutoAt(index).getValor();
+            }
+            txtValorFinal.setText(Double.toString(valorTotal).replace(".", ","));
+        });
         
         PessoaListModel pessoaListModel = new PessoaListModel(controllerPessoa.carregar());
         listPessoa.setModel(pessoaListModel);
@@ -152,36 +154,47 @@ public class CadastroOrcamento extends javax.swing.JFrame {
        }
        
        if (controllerOrcamento.gravar(orcamento)) {
-           JOptionPane.showMessageDialog(null, "Pessoa salva com sucesso!");
+           JOptionPane.showMessageDialog(null, "Orçamento salvo com sucesso!");
            this.dispose();
        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private Orcamento getOrcamento() {
-//        if (txtNome.getText().isEmpty()) {
-//            JOptionPane.showMessageDialog(null, "É necessário informar o nome!");
-//            return null;
-//        }
-//        
-//        String nome = txtNome.getText();
-//        String telefone = txtTelefone.getText();
-//        String email = txtEmail.getText();
-//        
-//        if (telefone.trim().length() < 9) {
-//            telefone = "";
-//        }
-//        
+        int produtos[] = listProduto.getSelectedIndices();
+        if (produtos.length == 0) {
+            JOptionPane.showMessageDialog(null, "É necessário selecionar ao menos 1 produto!");
+            return null;
+        }
+        int pessoas[] = listPessoa.getSelectedIndices();
+        if (pessoas.length == 0) {
+            JOptionPane.showMessageDialog(null, "É necessário selecionar ao menos 1 pessoa!");
+            return null;
+        }
+        
+        List<Pessoa> lPessoa = new ArrayList<>();
+        PessoaListModel modelPessoa = (PessoaListModel) listPessoa.getModel();
+        for (int index : listPessoa.getSelectedIndices()) {
+            lPessoa.add(modelPessoa.getPessoaAt(index));
+        }
+        ListaPessoa listaPessoa = new ListaPessoa(lPessoa);
+        List<Produto> lProduto = new ArrayList<>();
+        ProdutoListModel modelProduto = (ProdutoListModel) listProduto.getModel();
+        for (int index : listProduto.getSelectedIndices()) {
+            lProduto.add(modelProduto.getProdutoAt(index));
+        }
+        ListaProduto listaProduto = new ListaProduto(lProduto);
+        
         Orcamento orcamento = new Orcamento();
-//        orcamento.setNome(nome);
-//        orcamento.setTelefone(telefone);
-//        orcamento.setEmail(email);
-
+        orcamento.setCodigo(0);
+        orcamento.setListaPessoa(listaPessoa);
+        orcamento.setListaProduto(listaProduto);
+        orcamento.setDataCompra(Calendar.getInstance().getTimeInMillis());
+        orcamento.setDataCriado(Calendar.getInstance().getTimeInMillis());
         return orcamento;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -189,7 +202,6 @@ public class CadastroOrcamento extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JList<String> listPessoa;
     private javax.swing.JList<String> listProduto;
-    private javax.swing.JFormattedTextField txtValorExtra;
     private javax.swing.JFormattedTextField txtValorFinal;
     // End of variables declaration//GEN-END:variables
 }

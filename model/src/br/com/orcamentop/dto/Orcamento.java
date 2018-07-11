@@ -10,9 +10,9 @@ public final class Orcamento implements org.omg.CORBA.portable.IDLEntity {
     private int codigo = (int) 0;
     private ListaProduto listaProduto = null;
     private ListaPessoa listaPessoa = null;
-    private String descricao = null;
-    private String observacao = null;
-    private String localCompra = null;
+    private String descricao = "";
+    private String observacao = "";
+    private String localCompra = "";
     private long dataCompra = (long) 0;
     private long dataCriado = (long) 0;
 
